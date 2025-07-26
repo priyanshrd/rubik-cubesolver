@@ -10,6 +10,7 @@
     "test": "ts-node testCube.ts"
   },
   "dependencies": {
+    "dotenv": "^17.2.1",
     "openai": "^4.28.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

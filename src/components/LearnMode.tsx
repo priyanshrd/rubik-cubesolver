@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Cube, CubeSolver } from '../Cube';
 import type { SolveStep } from '../Cube';
 import { CubeView } from './CubeView';
-import { LLMService, TextToSpeechService, type MoveExplanation } from '../services/llmService';
+import { LLMService, TextToSpeechService } from '../services/llmService';
+import type { MoveExplanation } from '../services/llmService';
 
 interface LearnModeProps {
   cube: Cube;
@@ -28,8 +29,8 @@ export const LearnMode: React.FC<LearnModeProps> = ({ cube }) => {
   const [autoPlay, setAutoPlay] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(2000);
   
-  const llmService = LLMService.getInstance();
-  const ttsService = TextToSpeechService.getInstance();
+  const llmService = LLMService;
+  const ttsService = TextToSpeechService;
 
   useEffect(() => {
     setSteps(CubeSolver.solve(cube));

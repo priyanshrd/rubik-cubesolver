@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, type MouseEvent } from 'react';
 import type { CubeState, Face } from '../Cube';
 
 const FACE_LABELS: Record<Face, string> = {
@@ -85,16 +85,53 @@ export const CubeView: React.FC<CubeViewProps> = ({
 };
 
 // Enhanced 3D Cube View Component
-export const Cube3DView: React.FC<{ state: CubeState; rotation?: { x: number; y: number } }> = ({ 
-  state, 
-  rotation = { x: -20, y: 45 } 
+export const Cube3DView: React.FC<{ state: CubeState; initialRotation?: { x: number; y: number } }> = ({
+  state,
+  initialRotation = { x: -20, y: 45 },
 }) => {
+  const [rotation, setRotation] = useState(initialRotation);
+  const [isDragging, setIsDragging] = useState(false);
+  const lastMousePosition = useRef({ x: 0, y: 0 });
   const cubeSize = 120;
   const faceSize = cubeSize - 4;
-  
+
+  const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    lastMousePosition.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    const deltaX = e.clientX - lastMousePosition.current.x;
+    const deltaY = e.clientY - lastMousePosition.current.y;
+
+    setRotation(prev => ({
+      x: prev.x - deltaY * 0.5,
+      y: prev.y + deltaX * 0.5,
+    }));
+    lastMousePosition.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  };
+
   return (
-    <div className="cube-3d-container" style={{ perspective: '800px', margin: '2rem auto' }}>
-      <div 
+    <div
+      className="cube-3d-container"
+      style={{ perspective: '800px', margin: '2rem auto', cursor: isDragging ? 'grabbing' : 'grab' }}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div
         className="cube-3d"
         style={{
           width: cubeSize,
@@ -102,8 +139,8 @@ export const Cube3DView: React.FC<{ state: CubeState; rotation?: { x: number; y:
           position: 'relative',
           transformStyle: 'preserve-3d',
           transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
-          transition: 'transform 0.5s ease-in-out',
-          margin: '0 auto'
+          margin: '0 auto',
+          transition: isDragging ? 'none' : 'transform 0.2s ease-out',
         }}
       >
         {/* Front Face */}

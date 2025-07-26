@@ -194,9 +194,6 @@ function AppContent() {
       <div className="card">
         <div className="card-header">
           <h2 className="card-title">Practice Mode</h2>
-          <button className="btn btn-ghost" onClick={() => setCurrentMode('home')}>
-            ← Back to Home
-          </button>
         </div>
         
         <div className="text-center p-lg">
@@ -230,9 +227,6 @@ function AppContent() {
       <div className="card">
         <div className="card-header">
           <h2 className="card-title">Statistics</h2>
-          <button className="btn btn-ghost" onClick={() => setCurrentMode('home')}>
-            ← Back to Home
-          </button>
         </div>
         
         <div className="stats-panel">
@@ -281,58 +275,44 @@ function AppContent() {
     </div>
   );
 
+  const renderNavigation = () => (
+    <nav className="main-nav">
+      <button onClick={() => setCurrentMode('home')} className={currentMode === 'home' ? 'active' : ''}>Home</button>
+      <button onClick={() => setCurrentMode('learn')} className={currentMode === 'learn' ? 'active' : ''}>Learn</button>
+      <button onClick={() => setCurrentMode('practice')} className={currentMode === 'practice' ? 'active' : ''}>Practice</button>
+      <button onClick={() => setCurrentMode('interactive')} className={currentMode === 'interactive' ? 'active' : ''}>Interactive</button>
+      <button onClick={() => setCurrentMode('patterns')} className={currentMode === 'patterns' ? 'active' : ''}>Patterns</button>
+      <button onClick={() => setCurrentMode('stats')} className={currentMode === 'stats' ? 'active' : ''}>Stats</button>
+    </nav>
+  );
+
   return (
     <div className="app-container">
-     
-      <div className="mode-indicator">
-        Mode: {currentMode.charAt(0).toUpperCase() + currentMode.slice(1)}
-      </div>
-
       <header className="app-header">
         <h1 className="app-title">Rubik's Cube Solver</h1>
         <p className="app-subtitle">Master the cube with AI-powered learning</p>
       </header>
 
-      {currentMode === 'home' && renderHome()}
-      {currentMode === 'learn' && (
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Learn Mode</h2>
-            <button className="btn btn-ghost" onClick={() => setCurrentMode('home')}>
-              ← Back to Home
-            </button>
-          </div>
-          <LearnMode cube={cube} />
-        </div>
-      )}
-      {currentMode === 'practice' && renderPracticeMode()}
-      {currentMode === 'interactive' && (
-        <div className="main-content">
+      {renderNavigation()}
+
+      <main className="main-content-area">
+        {currentMode === 'home' && renderHome()}
+        {currentMode === 'learn' && (
           <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">Interactive Mode</h2>
-              <button className="btn btn-ghost" onClick={() => setCurrentMode('home')}>
-                ← Back to Home
-              </button>
-            </div>
+            <LearnMode cube={cube} />
+          </div>
+        )}
+        {currentMode === 'practice' && renderPracticeMode()}
+        {currentMode === 'interactive' && (
+          <div className="card">
             <InteractiveCube cube={cube} onCubeChange={() => setRerender(r => r + 1)} />
           </div>
-        </div>
-      )}
-      {currentMode === 'patterns' && (
-        <div className="main-content">
-          <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">Pattern Library</h2>
-              <button className="btn btn-ghost" onClick={() => setCurrentMode('home')}>
-                ← Back to Home
-              </button>
-            </div>
-            <PatternLibrary cube={cube} onApplyPattern={() => setRerender(r => r + 1)} />
-          </div>
-        </div>
-      )}
-      {currentMode === 'stats' && renderStatsMode()}
+        )}
+        {currentMode === 'patterns' && (
+          <PatternLibrary cube={cube} onApplyPattern={() => setRerender(r => r + 1)} />
+        )}
+        {currentMode === 'stats' && renderStatsMode()}
+      </main>
     </div>
   );
 }

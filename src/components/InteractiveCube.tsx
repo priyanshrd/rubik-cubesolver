@@ -231,66 +231,44 @@ export const PatternLibrary: React.FC<{ cube: Cube; onApplyPattern: () => void }
   const applyPattern = (moves: string[]) => {
     cube.reset();
     moves.forEach(move => {
-      // Handle middle layer moves (simplified)
-      if (move === 'M2') {
-        cube.move('R');
-        cube.move('R');
-        cube.move("L'");
-        cube.move("L'");
-      } else if (move === 'E2') {
-        cube.move('U');
-        cube.move('U');
-        cube.move("D'");
-        cube.move("D'");
-      } else if (move === 'S2') {
-        cube.move('F');
-        cube.move('F');
-        cube.move("B'");
-        cube.move("B'");
-      } else {
-        cube.move(move);
-      }
+      cube.move(move);
     });
     onApplyPattern();
   };
 
   return (
-    <div className="pattern-library">
-      <div className="card">
-        <div className="card-header">
-          <h3 className="card-title">Pattern Library</h3>
-          <p className="card-subtitle">Apply interesting cube patterns</p>
-        </div>
-
-        <div className="pattern-grid" style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: 'var(--spacing-md)'
-        }}>
-          {patterns.map((pattern, index) => (
-            <div key={index} className="pattern-card" style={{
-              background: 'var(--bg-secondary)',
-              padding: 'var(--spacing-md)',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--bg-tertiary)'
-            }}>
-              <h4 style={{ margin: '0 0 var(--spacing-sm) 0' }}>{pattern.name}</h4>
-              <p className="text-sm text-muted" style={{ margin: '0 0 var(--spacing-md) 0' }}>
-                {pattern.description}
-              </p>
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-muted">
-                  {pattern.moves.length} moves
-                </span>
-                <button
-                  className="btn btn-sm btn-primary"
-                  onClick={() => applyPattern(pattern.moves)}
-                >
-                  Apply Pattern
-                </button>
+    <div className="pattern-layout">
+      <div className="pattern-list">
+        <div className="card">
+          <div className="card-header">
+            <h3 className="card-title">Pattern Library</h3>
+            <p className="card-subtitle">Apply interesting cube patterns</p>
+          </div>
+          <div className="pattern-grid">
+            {patterns.map((pattern, index) => (
+              <div key={index} className="pattern-card">
+                <h4>{pattern.name}</h4>
+                <p className="text-sm text-muted">{pattern.description}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-muted">{pattern.moves.length} moves</span>
+                  <button
+                    className="btn btn-sm btn-primary"
+                    onClick={() => applyPattern(pattern.moves)}
+                  >
+                    Apply Pattern
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="pattern-preview">
+        <div className="card">
+          <div className="card-header">
+            <h3 className="card-title">Live Preview</h3>
+          </div>
+          <CubeView state={cube.state} size="large" />
         </div>
       </div>
     </div>
